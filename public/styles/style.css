@@ -1,0 +1,21 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+input[type='text'],
+input[type='button'],
+input[type='submit'],
+button {
+    box-shadow: none;
+}
+
+tr,
+td {
+    border: 0;
+}

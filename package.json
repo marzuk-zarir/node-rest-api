@@ -1,0 +1,23 @@
+{
+    "name": "contact-book",
+    "version": "1.0.0",
+    "description": "Restful api with raw node",
+    "main": "index.js",
+    "scripts": {
+        "start": "nodemon index",
+        "prod": "node index"
+    },
+    "keywords": [
+        "rest-api",
+        "raw-node",
+        "nodejs"
+    ],
+    "author": "Marzuk Zarir",
+    "license": "ISC",
+    "devDependencies": {
+        "nodemon": "^2.0.12"
+    },
+    "dependencies": {
+        "mime-types": "^2.1.31"
+    }
+}

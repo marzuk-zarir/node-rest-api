@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <!-- Bootstrap 5.0 -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+            crossorigin="anonymous"
+        />
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"
+            defer
+        ></script>
+        <!-- Bootstrap icons -->
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
+        />
+        <!-- Google fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap"
+            rel="stylesheet"
+        />
+        <!-- Custom style & script -->
+        <link rel="stylesheet" href="./styles/style.css" />
+        <script src="./scripts/main.js" defer></script>
+        <!-- Title & favicon -->
+        <link rel="shortcut icon" href="./assets/favicon.png" type="image/x-icon" />
+        <title>Contacts Book - Save your contacts</title>
+    </head>
+    <body>
+        <div class="container">
+            <h1 class="display-4 text-center text-success">Contacts Book</h1>
+            <div class="table-responsive">
+                <table class="table border-0">
+                    <thead class="bg-primary">
+                        <tr>
+                            <td>Id</td>
+                            <td>name</td>
+                            <td>Email</td>
+                            <td>Phone Number</td>
+                        </tr>
+                    </thead>
+                    <tbody id="contactsContainer"></tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

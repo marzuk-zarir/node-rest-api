@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "name": "Cari",
+        "email": "cdaykin0@latimes.com",
+        "phone": "7625494784"
+    },
+    {
+        "id": 2,
+        "name": "Carlyle",
+        "email": "cruusa1@gnu.org",
+        "phone": "7747374584"
+    },
+    {
+        "id": 3,
+        "name": "Glynn",
+        "email": "gmoorwood2@hugedomains.com",
+        "phone": "4831543241"
+    },
+    {
+        "id": 4,
+        "name": "Quinton",
+        "email": "qdorwood3@discuz.net",
+        "phone": "2972377878"
+    },
+    {
+        "id": 5,
+        "name": "Curry",
+        "email": "cbranton4@cdc.gov",
+        "phone": "1807338881"
+    }
+]
