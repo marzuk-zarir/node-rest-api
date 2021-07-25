@@ -20,7 +20,7 @@ app.config = {
 
 // Create server
 app.createServer = async () => {
-    const server = http.createServer(await handleReqRes)
+    const server = http.createServer(handleReqRes)
     server.listen(app.config.port, () => {
         console.log(`Server is running on port ${app.config.port}`)
     })

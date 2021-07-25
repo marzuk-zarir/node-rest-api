@@ -10,7 +10,13 @@ const mimeType = require('mime-types').lookup
 
 const utils = {}
 
-// Write Content
+/**
+ * Write Content to the response object
+ * @param {object} responseObj
+ * @param {number} statusCode
+ * @param {array|object} file
+ * @param {object} errObj
+ */
 utils.writeContent = (responseObj, statusCode = 200, file, errObj = null) => {
     if (!errObj) {
         // Auto mime-type as file name using 'mime-types' package
@@ -22,7 +28,11 @@ utils.writeContent = (responseObj, statusCode = 200, file, errObj = null) => {
     }
 }
 
-// Parse json to js object
+/**
+ * Parse json to js object
+ * @param {JSON} json
+ * @returns {object}
+ */
 utils.parseJSON = (json) => {
     let object
     try {
@@ -34,12 +44,27 @@ utils.parseJSON = (json) => {
     }
 }
 
-// Check object is empty or not
-// fastest operation => https://stackoverflow.com/a/59787784/15116934
+/**
+ * Check object is empty or not: https://stackoverflow.com/a/59787784/15116934
+ * @param {object} obj
+ * @returns {boolean}
+ */
 utils.isEmptyObj = (obj) => {
     let isEmpty = true
     for (let i in obj) isEmpty = false
     return isEmpty
+}
+
+/**
+ * Exact RegExp match
+ * @param {RegExp} regex regular expression for string match
+ * @param {string} string string want to match
+ * @returns {boolean} is exactly match?
+ */
+utils.regexMatch = (regex, string) => {
+    const match = string.match(regex)
+    console.log({ string, match })
+    return match && string === match[0]
 }
 
 module.exports = utils

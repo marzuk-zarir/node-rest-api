@@ -9,12 +9,13 @@
 const path = require('path')
 const fs = require('fs/promises')
 const { writeContent, parseJSON, isEmptyObj } = require('../utils/utils')
+const { validateContact } = require('../utils/validation')
 
 const controller = {}
 const contactsFile = path.resolve(__dirname, '../data/contacts.json')
 
 /**
- * @description get all contacts
+ * get all contacts
  * @route GET api/contacts/
  */
 controller.getContacts = async (req, res) => {
@@ -27,7 +28,7 @@ controller.getContacts = async (req, res) => {
 }
 
 /**
- * @description get a single contact by id
+ * get a single contact by id
  * @route GET api/contact/:id
  */
 controller.getContactById = async (req, res, contactId) => {
@@ -51,7 +52,7 @@ controller.getContactById = async (req, res, contactId) => {
 }
 
 /**
- * @description get a single contact by querystring
+ * get a single contact by querystring
  * @route GET api/contact?key=value
  */
 controller.getContactByQuerystring = async (req, res, queryString) => {
@@ -101,19 +102,58 @@ controller.getContactByQuerystring = async (req, res, queryString) => {
 }
 
 /**
- * @description create a single contact
+ * create a single contact
  * @route POST api/contacts
  */
-controller.postContact = () => {}
+controller.postContact = async (req, res, payload) => {
+    try {
+        // Payload come with json formate.so, we should parse it in js object
+        let postedContact = parseJSON(payload)
+        postedContact = validateContact(postedContact)
+        // Validation check
+        if (postedContact) {
+            const allContacts = await fs.readFile(contactsFile, 'utf-8')
+            const parsedContacts = parseJSON(allContacts)
+            const isPhoneMatch = parsedContacts.filter((contact) => {
+                return contact.phone === postedContact.phone
+            })
+            if (isPhoneMatch.length === 0) {
+                const lastSavedContactId =
+                    parsedContacts.length > 0
+                        ? parsedContacts[parsedContacts.length - 1].id
+                        : 0
+                // Set new contact's id to last saved contacts (id + 1)
+                postedContact.id = lastSavedContactId + 1
+                // Read contact array and push new contact
+                parsedContacts.push(postedContact)
+                // Update whole array in database
+                await fs.writeFile(contactsFile, JSON.stringify(parsedContacts))
+                // Response new contact to user
+                writeContent(res, 200, JSON.stringify(postedContact))
+            } else {
+                writeContent(res, 400, null, {
+                    status: 'Phone number already saved in database'
+                })
+            }
+        } else {
+            writeContent(res, 400, null, {
+                status: 'There was a problem in your request'
+            })
+        }
+    } catch (e) {
+        console.log(e.message)
+        writeContent(res, 500, null, { status: 'Internal server error' })
+    }
+}
 
 /**
- * @description update a single contact
+ * update a single contact
  * @route PUT api/contacts
  */
 controller.putContact = () => {}
 
 /**
- * @description delete a single contact
+ * delete a single contact
  * @route DELETE api/contacts
  */
 controller.deleteContacts = () => {}
