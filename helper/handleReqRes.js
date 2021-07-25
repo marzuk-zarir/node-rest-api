@@ -11,32 +11,54 @@ const fs = require('fs/promises')
 const url = require('url')
 
 const { writeContent } = require('../utils/utils')
+const {
+    getContacts,
+    getContactById,
+    getContactByQuerystring
+} = require('../controllers/contactController')
 
 const handler = {}
 
 handler.handleReqRes = async (req, res) => {
-    const contactsFile = path.resolve(__dirname, '../data/contacts.json')
     const allowedMethods = ['get', 'post', 'put', 'delete']
+    const reqMethod = req.method.toLowerCase()
     let parsedUrl = url.parse(req.url, true)
-    parsedUrl = parsedUrl.pathname.replace(/^\/+|\/+$/g, '')
+    const path = parsedUrl.path
+    const queryString = parsedUrl.query
+
+    // Parse only route without unwanted slashes and question mark
+    parsedUrl = parsedUrl.path.replace(/^\/+|\/+$|\??$/g, '')
+
+    console.log(parsedUrl)
 
     // If client request unwanted request method throw error
-    if (allowedMethods.indexOf(req.method.toLowerCase()) < 0) {
+    if (allowedMethods.indexOf(reqMethod) < 0) {
         writeContent(res, 405, null, { status: 'Requested method is not allowed' })
         return false
+    }
+
+    // Get single contact - api/contacts/:id
+    if (parsedUrl.match(/api\/contacts\/([0-9]+)/) && reqMethod === 'get') {
+        const id = parsedUrl.split('/')[2] // => ['api','contacts',':id']
+        getContactById(req, res, id)
+        return
+    }
+
+    // Get single contact - api/contacts?key=value
+    if (parsedUrl.match(/api\/contacts\/?\?\w+=\w+/) && reqMethod === 'get') {
+        getContactByQuerystring(req, res, queryString)
+        return
+    }
+
+    // Get all contacts - api/contacts
+    if (parsedUrl === 'api/contacts') {
+        getContacts(req, res)
+        return
     }
 
     // If url is empty, load index html
     if (parsedUrl === '') {
         parsedUrl = 'index.html'
-    } else if (parsedUrl === 'api/contacts') {
-        try {
-            const allContact = await fs.readFile(contactsFile, 'utf-8')
-            writeContent(res, 200, allContact)
-        } catch (e) {
-            writeContent(res, 500, null, { status: 'Internal server error' })
-        }
-        return true
     }
 
     // Static site generation for application frontend

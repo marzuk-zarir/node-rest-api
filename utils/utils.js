@@ -22,4 +22,24 @@ utils.writeContent = (responseObj, statusCode = 200, file, errObj = null) => {
     }
 }
 
+// Parse json to js object
+utils.parseJSON = (json) => {
+    let object
+    try {
+        object = JSON.parse(json)
+    } catch (e) {
+        object = {}
+    } finally {
+        return object
+    }
+}
+
+// Check object is empty or not
+// fastest operation => https://stackoverflow.com/a/59787784/15116934
+utils.isEmptyObj = (obj) => {
+    let isEmpty = true
+    for (let i in obj) isEmpty = false
+    return isEmpty
+}
+
 module.exports = utils
