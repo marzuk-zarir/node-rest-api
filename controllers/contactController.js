@@ -9,26 +9,26 @@
 const path = require('path')
 const fs = require('fs/promises')
 const { writeContent, parseJSON, isEmptyObj } = require('../utils/utils')
-const { validateContact } = require('../utils/validation')
+const { validatePostContact, validatePutContact } = require('../utils/validation')
 
 const controller = {}
 const contactsFile = path.resolve(__dirname, '../data/contacts.json')
 
 /**
- * get all contacts
+ * Get all contacts
  * @route GET api/contacts/
  */
 controller.getContacts = async (req, res) => {
     try {
         const contacts = await fs.readFile(contactsFile, 'utf-8')
-        writeContent(res, 200, contacts)
+        writeContent(res, 200, contacts, false)
     } catch (e) {
-        writeContent(res, 500, null, { status: 'Internal server error' })
+        writeContent(res, 500, { status: 'Internal server error' })
     }
 }
 
 /**
- * get a single contact by id
+ * Get a single contact by id
  * @route GET api/contact/:id
  */
 controller.getContactById = async (req, res, contactId) => {
@@ -37,22 +37,22 @@ controller.getContactById = async (req, res, contactId) => {
         const parsedContacts = parseJSON(allContacts)
 
         if (!isEmptyObj(parsedContacts)) {
-            const contact = parsedContacts.filter((contact) => contact.id == contactId)
-            if (contact.length > 0) {
-                writeContent(res, 200, JSON.stringify(contact))
+            const contact = parsedContacts.findIndex((contact) => contact.id == contactId)
+            if (contact > -1) {
+                writeContent(res, 200, parsedContacts[contact])
             } else {
-                writeContent(res, 404, null, { status: '404 Contact not found' })
+                writeContent(res, 404, { status: '404 Contact not found' })
             }
         } else {
-            writeContent(res, 500, null, { status: 'Internal server error' })
+            writeContent(res, 500, { status: 'Internal server error' })
         }
     } catch (e) {
-        writeContent(res, 500, null, { status: 'Internal server error' })
+        writeContent(res, 500, { status: 'Internal server error' })
     }
 }
 
 /**
- * get a single contact by querystring
+ * Get a single contact by querystring
  * @route GET api/contact?key=value
  */
 controller.getContactByQuerystring = async (req, res, queryString) => {
@@ -65,7 +65,6 @@ controller.getContactByQuerystring = async (req, res, queryString) => {
                 const queryKey = Object.keys(queryString)
                 const queryValue = Object.values(queryString)
                 let contact
-
                 // Iterate every objects
                 userContact: for (const singleContact of parsedContacts) {
                     // Iterate every field of and object
@@ -80,44 +79,41 @@ controller.getContactByQuerystring = async (req, res, queryString) => {
                         }
                     }
                 }
-
                 // If contact is null, contact is not found in database
                 if (contact) {
-                    writeContent(res, 200, JSON.stringify(contact))
+                    writeContent(res, 200, contact)
                 } else {
-                    writeContent(res, 404, null, { status: 'User not found :(' })
+                    writeContent(res, 404, { status: 'Contact not found' })
                 }
             } else {
-                writeContent(res, 400, null, {
-                    status: 'More than one query is not accepted'
-                })
+                writeContent(res, 400, { status: 'More than one query is not accepted' })
             }
         } else {
-            writeContent(res, 500, null, { status: 'Internal server error' })
+            writeContent(res, 500, { status: 'Internal server error' })
         }
     } catch (e) {
         console.log(e.message)
-        writeContent(res, 500, null, { status: 'Internal server error' })
+        writeContent(res, 500, { status: 'Internal server error' })
     }
 }
 
 /**
- * create a single contact
+ * Create a single contact
  * @route POST api/contacts
  */
 controller.postContact = async (req, res, payload) => {
     try {
         // Payload come with json formate.so, we should parse it in js object
         let postedContact = parseJSON(payload)
-        postedContact = validateContact(postedContact)
+        postedContact = validatePostContact(postedContact)
         // Validation check
         if (postedContact) {
             const allContacts = await fs.readFile(contactsFile, 'utf-8')
             const parsedContacts = parseJSON(allContacts)
-            const isPhoneMatch = parsedContacts.filter((contact) => {
+            const isPhoneMatch = parsedContacts.findIndex((contact) => {
                 return contact.phone === postedContact.phone
             })
-            if (isPhoneMatch.length === 0) {
+            if (isPhoneMatch === -1) {
                 const lastSavedContactId =
                     parsedContacts.length > 0
                         ? parsedContacts[parsedContacts.length - 1].id
@@ -129,33 +125,84 @@ controller.postContact = async (req, res, payload) => {
                 // Update whole array in database
                 await fs.writeFile(contactsFile, JSON.stringify(parsedContacts))
                 // Response new contact to user
-                writeContent(res, 200, JSON.stringify(postedContact))
+                writeContent(res, 200, postedContact)
             } else {
-                writeContent(res, 400, null, {
+                writeContent(res, 400, {
                     status: 'Phone number already saved in database'
                 })
             }
         } else {
-            writeContent(res, 400, null, {
-                status: 'There was a problem in your request'
-            })
+            writeContent(res, 400, { status: 'There was a problem in your request' })
         }
     } catch (e) {
         console.log(e.message)
-        writeContent(res, 500, null, { status: 'Internal server error' })
+        writeContent(res, 500, { status: 'Internal server error' })
     }
 }
 
 /**
- * update a single contact
+ * Update a single contact
  * @route PUT api/contacts
  */
-controller.putContact = () => {}
+controller.putContact = async (req, res, id, payload) => {
+    try {
+        // Grab request payload and validate it
+        const contact = parseJSON(payload)
+        const { name, email, phone } = validatePutContact(contact)
+        // Read and parse all exiting contacts
+        const allContacts = await fs.readFile(contactsFile, 'utf-8')
+        const parsedContacts = parseJSON(allContacts, [])
+        // Checks if requested id was saved in database
+        const findContact = parsedContacts.findIndex((contact) => contact.id == id)
+
+        if (findContact > -1) {
+            // Check at least one field is validate
+            if (name || email || phone) {
+                // Grab the updated contact object form parsed contacts array
+                // todo: As object is muted, when we update property on 'updateContact' object automatically property updated in requested contact object of 'parsedContacts' array
+                const updateContact = parsedContacts[findContact]
+                // Update field as user's input
+                if (name) updateContact.name = name
+                if (email) updateContact.email = email
+                if (phone) updateContact.phone = phone
+                // Write all contacts in database
+                await fs.writeFile(contactsFile, JSON.stringify(parsedContacts))
+                // Response the updated contact to user
+                writeContent(res, 200, updateContact)
+            } else {
+                writeContent(res, 400, { status: 'Invalid update field' })
+            }
+        } else {
+            writeContent(res, 404, { status: 'Contact not found' })
+        }
+    } catch (e) {
+        console.log(e.message)
+        writeContent(res, 500, { status: 'Internal sever error!!' })
+    }
+}
 
 /**
- * delete a single contact
+ * Delete a single contact
  * @route DELETE api/contacts
  */
-controller.deleteContacts = () => {}
+controller.deleteContact = async (req, res, id) => {
+    try {
+        const allContacts = await fs.readFile(contactsFile, 'utf-8')
+        const contacts = parseJSON(allContacts)
+        const findRemoveContactIndex = contacts.findIndex((contact) => {
+            return contact.id == id
+        })
+        if (findRemoveContactIndex > -1) {
+            contacts.splice(findRemoveContactIndex, 1)
+            await fs.writeFile(contactsFile, JSON.stringify(contacts))
+            writeContent(res, 200, {})
+        } else {
+            writeContent(res, 404, { status: 'Contact not found' })
+        }
+    } catch (e) {
+        console.log(e.message)
+        writeContent(res, 500, { status: 'Internal sever error!!' })
+    }
+}
 
 module.exports = controller

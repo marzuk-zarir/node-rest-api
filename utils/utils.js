@@ -12,33 +12,37 @@ const utils = {}
 
 /**
  * Write Content to the response object
- * @param {object} responseObj
- * @param {number} statusCode
- * @param {array|object} file
- * @param {object} errObj
+ * When browser auto requested to css,ico,js then fileName or filePath wise mimetype will set
+ * @param {object} responseObj - Response object
+ * @param {number} statusCode - Success or error http status code
+ * @param {*} fileContent - Html, css, js or json file content
+ * @param {boolean} stringify - If false fileContent will not stringify
+ * @param {*} file - File path or name. Default is json
  */
-utils.writeContent = (responseObj, statusCode = 200, file, errObj = null) => {
-    if (!errObj) {
-        // Auto mime-type as file name using 'mime-types' package
-        responseObj.writeHead(statusCode, { 'Content-type': mimeType(file) })
-        responseObj.end(file)
-    } else {
-        responseObj.writeHead(statusCode, { 'Content-type': 'Application/json' })
-        responseObj.end(JSON.stringify(errObj))
-    }
+utils.writeContent = (
+    responseObj,
+    statusCode = 200,
+    fileContent,
+    stringify = true,
+    file = 'json'
+) => {
+    const stringifyFile = stringify ? JSON.stringify(fileContent) : fileContent
+    responseObj.writeHead(statusCode, { 'Content-type': mimeType(file) })
+    responseObj.end(stringifyFile)
 }
 
 /**
  * Parse json to js object
  * @param {JSON} json
- * @returns {object}
+ * @param {object} defaultReturn
+ * @returns {object|[]|string|false|null}
  */
-utils.parseJSON = (json) => {
+utils.parseJSON = (json, defaultReturn = {}) => {
     let object
     try {
         object = JSON.parse(json)
     } catch (e) {
-        object = {}
+        object = defaultReturn
     } finally {
         return object
     }
@@ -63,7 +67,6 @@ utils.isEmptyObj = (obj) => {
  */
 utils.regexMatch = (regex, string) => {
     const match = string.match(regex)
-    console.log({ string, match })
     return match && string === match[0]
 }
 
