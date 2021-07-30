@@ -110,27 +110,18 @@ controller.postContact = async (req, res, payload) => {
         if (postedContact) {
             const allContacts = await fs.readFile(contactsFile, 'utf-8')
             const parsedContacts = parseJSON(allContacts)
-            const isPhoneMatch = parsedContacts.findIndex((contact) => {
-                return contact.phone === postedContact.phone
-            })
-            if (isPhoneMatch === -1) {
-                const lastSavedContactId =
-                    parsedContacts.length > 0
-                        ? parsedContacts[parsedContacts.length - 1].id
-                        : 0
-                // Set new contact's id to last saved contacts (id + 1)
-                postedContact.id = lastSavedContactId + 1
-                // Read contact array and push new contact
-                parsedContacts.push(postedContact)
-                // Update whole array in database
-                await fs.writeFile(contactsFile, JSON.stringify(parsedContacts))
-                // Response new contact to user
-                writeContent(res, 200, postedContact)
-            } else {
-                writeContent(res, 400, {
-                    status: 'Phone number already saved in database'
-                })
-            }
+            const lastSavedContactId =
+                parsedContacts.length > 0
+                    ? parsedContacts[parsedContacts.length - 1].id
+                    : 0
+            // Set new contact's id to last saved contacts (id + 1)
+            postedContact.id = lastSavedContactId + 1
+            // Read contact array and push new contact
+            parsedContacts.push(postedContact)
+            // Update whole array in database
+            await fs.writeFile(contactsFile, JSON.stringify(parsedContacts))
+            // Response new contact to user
+            writeContent(res, 200, postedContact)
         } else {
             writeContent(res, 400, { status: 'There was a problem in your request' })
         }
@@ -142,7 +133,7 @@ controller.postContact = async (req, res, payload) => {
 
 /**
  * Update a single contact
- * @route PUT api/contacts
+ * @route PUT api/contacts/:id
  */
 controller.putContact = async (req, res, id, payload) => {
     try {
@@ -183,7 +174,7 @@ controller.putContact = async (req, res, id, payload) => {
 
 /**
  * Delete a single contact
- * @route DELETE api/contacts
+ * @route DELETE api/contacts/:id
  */
 controller.deleteContact = async (req, res, id) => {
     try {

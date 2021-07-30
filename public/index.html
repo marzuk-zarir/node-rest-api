@@ -37,21 +37,218 @@
         <title>Contacts Book - Save your contacts</title>
     </head>
     <body>
-        <div class="container">
-            <h1 class="display-4 text-center text-success">Contacts Book</h1>
-            <div class="table-responsive">
-                <table class="table border-0">
-                    <thead class="bg-primary">
-                        <tr>
-                            <td>Id</td>
-                            <td>name</td>
-                            <td>Email</td>
-                            <td>Phone Number</td>
-                        </tr>
-                    </thead>
-                    <tbody id="contactsContainer"></tbody>
-                </table>
+        <!-- Header section -->
+        <header
+            class="header d-flex justify-content-center align-items-center bg-secondary"
+        >
+            <h1 class="h4 text-white ms-3 mb-0">
+                <i class="bi bi-person-badge-fill me-2"></i>Contacts Book
+            </h1>
+        </header>
+        <!-- Main section -->
+        <main class="main">
+            <div class="container py-3">
+                <div id="alert-wrapper"></div>
+                <button
+                    class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#add-contact-modal"
+                >
+                    <i class="bi bi-person-plus-fill"></i>
+                    <span class="d-none d-md-inline">Add Contact</span>
+                </button>
+                <div class="table-responsive pt-2">
+                    <table class="table table-striped table-borderless">
+                        <thead class="bg-info text-white">
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </thead>
+                        <tbody id="contacts-container">
+                            <!-- <tr>
+                                <td>1</td>
+                                <td>Dev Charlie</td>
+                                <td>01711111111</td>
+                                <td>devcharlie123@gmail.com</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning">
+                                        <i class="bi bi-pencil-square"></i>
+                                        <span class="d-none d-md-inline">Edit</span>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                        <span class="d-none d-md-inline">Delete</span>
+                                    </button>
+                                </td>
+                            </tr> -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
+
+            <!-- Add contact modal -->
+            <div class="modal fade" id="add-contact-modal" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form id="add-contact-form">
+                            <div class="modal-header bg-primary text-light">
+                                <h5 class="modal-title">
+                                    <i class="bi bi-person-square me-2"></i>Add New
+                                    Contact
+                                </h5>
+                                <button
+                                    type="button"
+                                    class="btn-close bg-light"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"
+                                ></button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <label for="new-name" class="form-label">Name:</label>
+                                    <input
+                                        type="text"
+                                        id="new-name"
+                                        class="form-control"
+                                        placeholder="Enter your name"
+                                    />
+                                    <div class="invalid-feedback">
+                                        Please enter a name between 5 and 15 characters.
+                                    </div>
+                                </div>
+                                <div class="has-validation my-2">
+                                    <label for="new-name" class="form-label"
+                                        >Phone:</label
+                                    >
+                                    <input
+                                        type="text"
+                                        id="new-phone"
+                                        class="form-control"
+                                        placeholder="Enter your phone number"
+                                    />
+                                    <div class="invalid-feedback">
+                                        Please enter a
+                                        <span class="fw-bold">Bangladeshi</span> valid
+                                        phone number.
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="new-email" class="form-label"
+                                        >Email:</label
+                                    >
+                                    <input
+                                        type="text"
+                                        id="new-email"
+                                        class="form-control"
+                                        placeholder="Enter your email address"
+                                    />
+                                    <div class="invalid-feedback">
+                                        Please enter a valid email address.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer border-0">
+                                <input
+                                    type="submit"
+                                    class="btn btn-primary"
+                                    value="Save Contact"
+                                />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- /Add contact modal -->
+
+            <!-- Edit contact modal -->
+            <div class="modal fade" id="edit-contact-modal" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form id="edit-contact-form">
+                            <div class="modal-header bg-primary text-light">
+                                <h5 class="modal-title">
+                                    <i class="bi bi-pencil-square me-2"></i>
+                                    Edit Contact
+                                </h5>
+                                <button
+                                    type="button"
+                                    class="btn-close bg-light"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"
+                                ></button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <label for="edit-name" class="form-label"
+                                        >Name:</label
+                                    >
+                                    <input
+                                        type="text"
+                                        id="edit-name"
+                                        class="form-control"
+                                        placeholder="Enter your name"
+                                    />
+                                    <div class="invalid-feedback">
+                                        Please enter a name between 5 and 15 characters.
+                                    </div>
+                                </div>
+                                <div class="my-2">
+                                    <label for="edit-name" class="form-label"
+                                        >Phone:</label
+                                    >
+                                    <input
+                                        type="text"
+                                        id="edit-phone"
+                                        class="form-control"
+                                        placeholder="Enter your phone number"
+                                    />
+                                    <div class="invalid-feedback">
+                                        Please enter a
+                                        <span class="fw-bold">Bangladeshi</span> valid
+                                        phone number.
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="edit-email" class="form-label"
+                                        >Email:</label
+                                    >
+                                    <input
+                                        type="text"
+                                        id="edit-email"
+                                        class="form-control"
+                                        placeholder="Enter your email address"
+                                    />
+                                    <div class="invalid-feedback">
+                                        Please enter a valid email address.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer border-0">
+                                <input
+                                    type="submit"
+                                    class="btn btn-primary"
+                                    value="Save Contact"
+                                />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- /Edit contact modal -->
+        </main>
+        <!-- Footer section -->
+        <footer class="footer d-flex justify-content-center align-items-center bg-dark">
+            <p class="lead mb-0 text-white">
+                All Right Reserved 2021 &copy;
+                <a
+                    href="https://github.com/marzuk-zarir"
+                    target="__blank"
+                    class="author-link"
+                    >Marzuk Zarir</a
+                >
+            </p>
+        </footer>
     </body>
 </html>

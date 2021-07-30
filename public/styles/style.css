@@ -1,21 +1,75 @@
+/**
+ * Title: Custom style sheet
+ * Description: contact book application frontend custom style
+ * Author: Marzuk Zarir
+ * Date: 29-07-2021
+ *
+ */
+
+/* Reset code */
 * {
     box-sizing: border-box;
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: Poppins, sans-serif;
     font-size: 16px;
-    line-height: 1.4;
+    line-height: normal;
 }
 
-input[type='text'],
-input[type='button'],
-input[type='submit'],
-button {
-    box-shadow: none;
+button:focus,
+input[type='submit']:focus {
+    box-shadow: none !important;
 }
 
-tr,
-td {
-    border: 0;
+.form-control:focus {
+    box-shadow: 0 0 0 0.1rem rgb(13 110 253 / 25%);
+}
+
+/* Header section */
+.header {
+    min-height: 50px;
+}
+
+/* Main section */
+.main {
+    min-height: 88vh;
+}
+
+.alert-error {
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    background-color: rgba(242, 73, 99, 0.7);
+    border-radius: 12px;
+    border: 1px solid rgba(209, 213, 219, 0.3);
+    z-index: 9999;
+}
+
+.alert-success {
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    background-color: rgba(184, 233, 134, 0.6);
+    border-radius: 12px;
+    border: 1px solid rgba(209, 213, 219, 0.3);
+    z-index: 9999;
+}
+
+/* Footer section */
+.footer {
+    width: 100%;
+    min-height: 50px;
+}
+
+.footer .lead {
+    font-size: 0.99rem;
+}
+
+.footer .author-link {
+    text-decoration: none;
+    color: var(--bs-cyan);
+}
+
+.footer .author-link:hover {
+    text-decoration: underline;
+    color: var(--bs-primary);
 }

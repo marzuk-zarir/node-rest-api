@@ -44,7 +44,7 @@ validate.validatePutContact = ({ name, email, phone }) => {
  * @return {string|false}
  */
 validate._validateName = (name) => {
-    return typeof name === 'string' && regexMatch(/([a-z]|\s){1,15}/gi, name.trim())
+    return typeof name === 'string' && regexMatch(/([a-z]|\s){5,15}/gi, name.trim())
         ? name.trim()
         : false
 }
