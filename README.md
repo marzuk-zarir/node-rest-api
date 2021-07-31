@@ -39,12 +39,6 @@ npm start
 
 4. Your app is start in http://localhost:3000
 
-## Live link
-
-This application is hosted in [heroku](https://heroku.com)
-
-Here is the [app](https://contactbooklist.herokuapp.com/)
-
 ## Technology
 
 -   [Nodejs](https://nodejs.org)
