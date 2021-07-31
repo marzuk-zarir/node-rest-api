@@ -15,7 +15,7 @@ PUT      /api/contacts/:id
 DELETE   /api/contacts/:id
 ```
 
-**Note**: More than one query is not acceptable in 'GET' request
+**Note**: More than one query parameter is not acceptable in 'GET' request
 
 ## How to run
 
